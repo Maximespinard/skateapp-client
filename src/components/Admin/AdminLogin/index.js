@@ -7,6 +7,7 @@ import { Grid, TextField, Button, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
+import { toast } from 'react-toastify';
 import Toaster from '../../Toaster';
 import { useLoginAdminMutation } from '../../../redux/services/adminApi';
 
@@ -25,18 +26,27 @@ const AdminLogin = () => {
 
   const classes = useStyles();
   const { root, formContainer, textField } = classes;
-  const [loginAdmin, { isLoading, isSuccess }] = useLoginAdminMutation();
+  const [loginAdmin, { isLoading, isSuccess, isError, error, data: clientId }] =
+    useLoginAdminMutation();
   const { handleSubmit, register } = useForm();
   const history = useHistory();
 
   useEffect(() => {
     if (isSuccess) {
       history.push('/admin/dashboard');
+      localStorage.setItem('clientId', clientId);
     }
   }, [isSuccess]);
 
-  const onSubmit = async (data) => {
-    await loginAdmin(data);
+  useEffect(() => {
+    if (isError) {
+      const { message } = error.data;
+      toast.error(message);
+    }
+  }, [isError]);
+
+  const onSubmit = async (form) => {
+    await loginAdmin(form);
   };
 
   return (

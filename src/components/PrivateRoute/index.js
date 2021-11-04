@@ -1,14 +1,19 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
+import { useGetAdminQuery } from '../../redux/services/adminApi';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  const isAdminLoged = useSelector((state) => state.admin.isLogin);
+  const clientId = localStorage.getItem('clientId');
+  const { isError } = useGetAdminQuery(clientId);
   return (
     <Route
       {...rest}
       render={(props) =>
-        isAdminLoged ? <Component {...props} /> : <Redirect to="/admin/login" />
+        !isError ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/admin/login" />
+        )
       }
     />
   );
