@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
 import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
 
 import { Grid, TextField, Button, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
-import Toaster from '../Toaster';
-import { useLoginAdminMutation } from '../../redux/services/adminApi';
+import Toaster from '../../Toaster';
+import { useLoginAdminMutation } from '../../../redux/services/adminApi';
 
 const AdminLogin = () => {
   const useStyles = makeStyles({
@@ -24,11 +25,18 @@ const AdminLogin = () => {
 
   const classes = useStyles();
   const { root, formContainer, textField } = classes;
-  const [loginAdmin, { isLoading }] = useLoginAdminMutation();
+  const [loginAdmin, { isLoading, isSuccess }] = useLoginAdminMutation();
   const { handleSubmit, register } = useForm();
+  const history = useHistory();
+
+  useEffect(() => {
+    if (isSuccess) {
+      history.push('/admin/dashboard');
+    }
+  }, [isSuccess]);
 
   const onSubmit = async (data) => {
-    await loginAdmin(data)
+    await loginAdmin(data);
   };
 
   return (
