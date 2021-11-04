@@ -1,14 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@mui/styles';
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { Grid, TextField, Button, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
-import { logAdmin } from '../../redux/features/adminSlice';
 import Toaster from '../Toaster';
+import { useLoginAdminMutation } from '../../redux/services/adminApi';
 
 const AdminLogin = () => {
   const useStyles = makeStyles({
@@ -25,14 +24,11 @@ const AdminLogin = () => {
 
   const classes = useStyles();
   const { root, formContainer, textField } = classes;
-
-  const dispatch = useDispatch();
-  const adminState = useSelector((state) => state.admin);
-  const { loading } = adminState;
+  const [loginAdmin, { isLoading }] = useLoginAdminMutation();
   const { handleSubmit, register } = useForm();
 
-  const onSubmit = (data) => {
-    dispatch(logAdmin(data));
+  const onSubmit = async (data) => {
+    await loginAdmin(data)
   };
 
   return (
@@ -81,10 +77,10 @@ const AdminLogin = () => {
                 type="submit"
                 size="large"
                 variant="contained"
-                startIcon={!loading ? <KeyboardArrowRightIcon /> : null}
+                startIcon={!isLoading ? <KeyboardArrowRightIcon /> : null}
                 style={{ width: '100%' }}
               >
-                {loading ? <CircularProgress color="inherit" /> : 'Connexion'}
+                {isLoading ? <CircularProgress color="inherit" /> : 'Connexion'}
               </Button>
             </Grid>
           </Grid>

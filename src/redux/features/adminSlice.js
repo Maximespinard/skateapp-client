@@ -3,29 +3,25 @@ import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 
 const initialState = {
-  loading: false,
-  token: '',
+  isLogin: false,
 };
 
 const adminSlice = createSlice({
   name: 'admin',
   initialState,
   reducers: {
-    logAdmin() {
-      return { loading: true };
+    loginAdminSuccess(state, action) {
+      const { token } = action.payload;
+      console.log(token);
+      return { isLogin: true };
     },
-    logAdminError(state, action) {
+    loginAdminError(state, action) {
       const { message } = action.payload;
       toast.error(message);
-      return { ...action, loading: false };
-    },
-    logAdminSuccess(state, action) {
-      const { token } = action.payload;
-      return { token, loading: false, };
     },
   },
 });
 
-export const { logAdmin, logAdminError, logAdminSuccess } = adminSlice.actions;
+export const { loginAdminSuccess, loginAdminError } = adminSlice.actions;
 
 export default adminSlice.reducer;

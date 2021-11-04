@@ -1,21 +1,13 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import createSagaMiddleware from 'redux-saga';
+import { configureStore } from '@reduxjs/toolkit';
+
+import {adminApi} from './services/adminApi';
 import adminSlice from './features/adminSlice';
-import watcherSaga from './sagas/rootSaga';
 
-const sagaMiddleware = createSagaMiddleware();
-
-const reducer = combineReducers({
-  admin: adminSlice,
+export default configureStore({
+  reducer: {
+    admin: adminSlice,
+    [adminApi.reducerPath]: adminApi.reducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(adminApi.middleware),
 });
-
-const store = configureStore({
-  reducer,
-  middleware: (getDefaultMiddleware) => [
-    ...getDefaultMiddleware(),
-    sagaMiddleware,
-  ],
-});
-sagaMiddleware.run(watcherSaga);
-
-export default store;
