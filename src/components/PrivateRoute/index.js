@@ -5,6 +5,7 @@ import { useGetAdminQuery } from '../../redux/services/adminApi';
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const clientId = localStorage.getItem('clientId');
   const { isError } = useGetAdminQuery(clientId);
+  
   return (
     <Route
       {...rest}
